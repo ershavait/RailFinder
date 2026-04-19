@@ -194,30 +194,30 @@ def fetch_overpass(query: str) -> list:
     last_error = None
     empty_result = None
 
-    with ThreadPoolExecutor(max_workers=len(OVERPASS_MIRRORS)) as pool:
-        future_to_mirror = {
-            pool.submit(_query_single_mirror, mirror, query): mirror
-            for mirror in OVERPASS_MIRRORS
-        }
-        # Use wait() so we can properly stop early once we have a good result
-        pending = set(future_to_mirror.keys())
-        while pending:
-            done, pending = wait(pending, timeout=30, return_when=FIRST_COMPLETED)
-            for future in done:
-                mirror = future_to_mirror[future]
-                try:
-                    elements = future.result()
-                    if len(elements) > 0:
-                        _set_cache(query, elements)
-                        # Cancel remaining pending futures
-                        for f in pending:
-                            f.cancel()
-                        return elements
-                    elif empty_result is None:
-                        empty_result = elements
-                except Exception as e:
-                    last_error = f"{mirror}: {e}"
+    pool = ThreadPoolExecutor(max_workers=len(OVERPASS_MIRRORS))
+    future_to_mirror = {
+        pool.submit(_query_single_mirror, mirror, query): mirror
+        for mirror in OVERPASS_MIRRORS
+    }
+    # Use wait() so we can properly stop early once we have a good result
+    pending = set(future_to_mirror.keys())
+    while pending:
+        done, pending = wait(pending, timeout=30, return_when=FIRST_COMPLETED)
+        for future in done:
+            mirror = future_to_mirror[future]
+            try:
+                elements = future.result()
+                if len(elements) > 0:
+                    _set_cache(query, elements)
+                    # Non-blocking shutdown to allow returning immediately
+                    pool.shutdown(wait=False, cancel_futures=True)
+                    return elements
+                elif empty_result is None:
+                    empty_result = elements
+            except Exception as e:
+                last_error = f"{mirror}: {e}"
 
+    pool.shutdown(wait=False, cancel_futures=True)
     if empty_result is not None:
         return empty_result
 
