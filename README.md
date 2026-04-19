@@ -7,7 +7,7 @@
 
 ## Project Structure
 ```
-railfinder/
+railfinder/ 
 ├── backend/          ← FastAPI — deployed on Render
 └── frontend/         ← React + Vite — deployed on Vercel
 ```
