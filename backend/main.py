@@ -3,7 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 import json, math, requests, time, hashlib, bisect
 from concurrent.futures import ThreadPoolExecutor, wait, FIRST_COMPLETED
 from functools import lru_cache
+from pathlib import Path
 from typing import Optional
+
+BASE_DIR = Path(__file__).parent
 
 app = FastAPI(title="RailFinder API", version="1.0.0")
 
@@ -58,7 +61,7 @@ def _set_cache(query: str, data: list):
 # ---------------------------------------------------------------------------
 @lru_cache(maxsize=1)
 def load_stations():
-    with open("stations.json", encoding="utf-8") as f:
+    with open(BASE_DIR / "stations.json", encoding="utf-8") as f:
         raw = json.load(f)
     stations = []
     for feat in raw["features"]:
