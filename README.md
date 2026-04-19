@@ -1,15 +1,15 @@
 # RailFinder 🚂
-
 **Indian Railways Wayfinder** — Find restaurants, hotels, hospitals, and more near any Indian railway station.
+
+🌐 **Live at:** [rail-finder.vercel.app](https://rail-finder.vercel.app)
 
 ---
 
 ## Project Structure
-
 ```
 railfinder/
-├── backend/          ← FastAPI — deploy to Railway
-└── frontend/         ← React + Vite — deploy to Vercel
+├── backend/          ← FastAPI — deployed on Render
+└── frontend/         ← React + Vite — deployed on Vercel
 ```
 
 ---
@@ -17,46 +17,43 @@ railfinder/
 ## Local Development
 
 ### 1. Backend
-
 ```bash
 cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
-
-API will be live at `http://localhost:8000`
+API will be live at `http://localhost:8000`  
 Swagger docs at `http://localhost:8000/docs`
 
 ### 2. Frontend
-
 ```bash
 cd frontend
 npm install
-cp .env.example .env.local
-# Edit .env.local → set VITE_API_URL=http://localhost:8000
+# Create .env.local and set:
+# VITE_API_URL=http://localhost:8000
 npm run dev
 ```
-
 App will be live at `http://localhost:5173`
 
 ---
 
 ## Deployment
 
-### Backend → Railway
-
-1. Go to [railway.app](https://railway.app) and create a new project
+### Backend → Render
+1. Go to [render.com](https://render.com) and create a new **Web Service**
 2. Connect your GitHub repo
 3. Set **Root Directory** to `backend`
-4. Railway auto-detects Python via `nixpacks.toml`
-5. Copy the Railway public URL (e.g. `https://railfinder-api.up.railway.app`)
+4. Set **Start Command** to:
+   ```
+   uvicorn main:app --host 0.0.0.0 --port $PORT
+   ```
+5. Copy the Render public URL (e.g. `https://railfinder-ipz7.onrender.com`)
 
 ### Frontend → Vercel
-
 1. Go to [vercel.com](https://vercel.com) and import your GitHub repo
 2. Set **Root Directory** to `frontend`
 3. Add Environment Variable:
-   - `VITE_API_URL` = your Railway URL from above
+   - `VITE_API_URL` = your Render URL from above
 4. Deploy — Vercel handles the rest
 
 ---
@@ -79,7 +76,7 @@ App will be live at `http://localhost:5173`
 | Frontend | React 18, Vite, Tailwind CSS |
 | Backend | FastAPI, Python 3.11 |
 | Data | `stations.json` (GeoJSON), Overpass API (OSM) |
-| Hosting | Vercel (frontend), Railway (backend) |
+| Hosting | Vercel (frontend), Render (backend) |
 
 ---
 
