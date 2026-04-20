@@ -74,7 +74,7 @@ export default function SearchPage() {
       <div className="mt-12 grid grid-cols-3 gap-4">
         {[
           { icon: 'train', label: '8,000+', sub: 'Stations' },
-          { icon: 'location_on', label: '3 km', sub: 'Search radius' },
+          { icon: 'location_on', label: '0.5 km - 10 km', sub: 'Search radius' },
           { icon: 'category', label: '7', sub: 'Categories' },
         ].map(s => (
           <div key={s.label} className="flex flex-col items-center gap-1 p-4 bg-surface-container-low rounded-lg">
